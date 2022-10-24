@@ -1,0 +1,3 @@
+[submodule "pyqt_get_server"]
+	path = pyqt_get_server
+	url = https://github.com/JCYYTDD/pyqt_get_server.git
