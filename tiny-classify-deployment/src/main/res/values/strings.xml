@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">PestAI</string>
+    <string name="title_home">主页</string>
+    <string name="title_dashboard">操作面板</string>
+    <string name="title_loglist">日志</string>
+    <string name="title_about">关于</string>
+    <string name="title_take_photo">拍摄图片</string>
+    <string name="title_upload_photo">上传图片</string>
+</resources>

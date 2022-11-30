@@ -1,0 +1,7 @@
+/build
+/release
+/.gradle
+/.idea
+/gradle
+*.jar
+*.hprof

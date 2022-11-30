@@ -1,7 +1,7 @@
 import os
 import subprocess
 # adb工具路径
-adb_path = "D:\CSTCloud\\freshman\SoftwareEngineering\Program\platform-tools\\adb.exe"
+adb_path = r'D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\Simplify\adb\adb.exe'
 
 def add_sdcard_files(dataset_path, sdcard_path):
     """将电脑上的某文件夹下的所有文件传输至手机上的可读写特定路径"""
@@ -20,7 +20,7 @@ def delete_sdcard_files(sdcard_path):
         sdcard_path = sdcard_path + "/*"
     subprocess.call([adb_path, "shell", "rm", "-rf", sdcard_path])
 # test
-dataset_path = "D:\CSTCloud\\freshman\SoftwareEngineering\Program\dataset"
+dataset_path = r"D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\dataset"
 sdcard_path = "/sdcard/Simplify/tmpDataset"
 add_sdcard_files(dataset_path, sdcard_path)
-delete_sdcard_files(sdcard_path)
+
