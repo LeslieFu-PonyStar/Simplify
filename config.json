@@ -1,6 +1,6 @@
 {
     "task_name": "classify",
-    "dataset_path": "/storage/emulated/0/Android/data/cn.ponystar.simplifymobile/files/tmpDataset",
+    "dataset_path": "/storage/emulated/0/Android/data/cn.ponystar.simplifymobile/files/dataset",
     "model_path": "/storage/emulated/0/Android/data/cn.ponystar.simplifymobile/files/SqueezeNet.pt",
     "classes": ["Apple",
                 "Background",

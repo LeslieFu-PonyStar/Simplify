@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class utils {
     private static final String TAG = "MainActivity";
@@ -39,5 +40,19 @@ public class utils {
         osw.write(json.toString());
         osw.flush();
         osw.close();
+    }
+
+    public static void deleteDir(File dir, boolean saveDir) {
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+        for (File file : Objects.requireNonNull(dir.listFiles())) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDir(file, false); // 递规的方式删除文件夹
+        }
+        if (!saveDir){
+            dir.delete();// 删除目录本身
+        }
     }
 }
