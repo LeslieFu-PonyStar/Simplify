@@ -6,27 +6,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClassifyTask implements Task {
     private final String jsonPath;
     private String taskName;
-    private File datasetDirPath;
     private String modelPath;
     private JSONArray classNames;
+    private Map<Boolean, String> generateState;
     public ClassifyTask(String jsonPath){
         this.jsonPath = jsonPath;
+        this.generateState = new HashMap<>();
         generateTask();
     }
     public String getTaskName() {
         return taskName;
     }
 
-    public File getDatasetDirPath() {
-        return datasetDirPath;
-    }
+
 
     public String getModelPath() {
         return modelPath;
@@ -34,6 +34,10 @@ public class ClassifyTask implements Task {
 
     public JSONArray getClassNames() {
         return classNames;
+    }
+
+    public Map<Boolean, String> getGenerateState() {
+        return generateState;
     }
 
     @Override
@@ -52,15 +56,17 @@ public class ClassifyTask implements Task {
             JSONObject json = new JSONObject(builder.toString());//builder读取了JSON中的数据。
             this.taskName = json.getString("task_name");
             if (!new File(json.getString("dataset_path")).exists()) {
-                Log.e("datapath", "exist error");
+                this.generateState.put(false, "Dataset path is incorrect or not exist.");
+            }else if(!new File(json.getString("model_path")).exists()){
+                this.generateState.put(false, "Model path is incorrect or not exist.");
             }
-            this.datasetDirPath = new File(json.getString("dataset_path"));
             this.modelPath = json.getString("model_path");
             this.classNames = json.getJSONArray("classes");
+            this.generateState.put(true, "");
         }catch (IOException e){
-            Log.e("IOException", ":", e);
+            this.generateState.put(false, "Stream Error.");
         }catch (JSONException e){
-            Log.e("JSONException", ":", e);
+            this.generateState.put(false, "Some json key not exist.");
         }
     }
 }
