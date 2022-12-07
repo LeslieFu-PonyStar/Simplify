@@ -1,4 +1,4 @@
 simplify.jks
-/adb
 result.csv
 config.json
+*.pyc

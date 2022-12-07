@@ -6,8 +6,10 @@ from func_timeout import func_set_timeout, FunctionTimedOut
 # adb工具路径
 adb_path = r'D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\Simplify\adb\adb.exe'
 app_name = 'cn.ponystar.simplifymobile/cn.ponystar.simplifymobile.'
+
 def error_handle():
-    pass
+    print(1)
+
 def add_sdcard_file(local_path, remote_path):
     """添加单个文件"""
     if(os.path.exists(local_path)):
@@ -66,7 +68,7 @@ def generate_config(file_dir_path, dataset_path, model_path):
     json_dict["task_name"] = "classify"
     json_dict["dataset_path"] = file_dir_path + "/" + "dataset"
     json_dict["model_path"] = file_dir_path + "/" + get_dir_and_file(model_path).get("file_name")
-    json_dict["classes"] = dir_names
+    json_dict["class"] = dir_names
     with open(r".\config.json","w") as f:
         json.dump(json_dict,f)
 
@@ -102,16 +104,14 @@ def start_main_activity(batch_size = 200, dataset_path = r"D:\CSTCloud\Freshman\
     # Service创建过程是否存在问题
     load_file_listener = subprocess.Popen([adb_path, "logcat","LoadFile:I", "*:S"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
     load_file_success_pattern = re.compile(r"Successfully")
-    load_file_fail_pattern = re.compile(r"Error: ")
-    line = load_file_listener.stdout.readline()
-    # if(re.search(load_file_success_pattern, line) != None):
-    #     pass
-    # elif(re.search(load_file_fail_pattern, line) != None):
-    #     error_handle()
-    #     return
-    # else:
-    #     error_handle()
-    #     return
+    load_file_fail_pattern = re.compile(r"Error,")
+    while(True):
+        line = load_file_listener.stdout.readline()
+        if(re.search(load_file_success_pattern, line) != None):
+            break
+        elif(re.search(load_file_fail_pattern, line) != None):
+            error_handle()
+            return
     load_file_listener.kill()
     # 批处理
     batch_test_end_listener = subprocess.Popen([adb_path, "logcat","BatchTestEnd:I", "*:S"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
@@ -162,4 +162,3 @@ def get_file_dir_path():
             return file_dir_path
 
 start_main_activity()
-
