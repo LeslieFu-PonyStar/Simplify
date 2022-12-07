@@ -57,7 +57,11 @@ public class BatchTestService extends Service {
         this.datasetDir.mkdirs();
         this.task = new ClassifyTask(configPath);
         this.errorMessages = new StringBuilder();
-        int classSize = this.task.getClassNames().length();
+        int classSize = 0;
+        if(this.task.getClassNames() != null)
+            classSize = this.task.getClassNames().length();
+        else
+            this.task.putGenerateState(false, "Json's key is incorrect or class list is null");
         this.resArrays = new int[classSize][classSize];
         this.time = 0;
         if(this.task.getGenerateState().containsKey(false)){

@@ -39,7 +39,9 @@ public class ClassifyTask implements Task {
     public Map<Boolean, String> getGenerateState() {
         return generateState;
     }
-
+    public void putGenerateState(boolean state, String description){
+        this.generateState.put(state, description);
+    }
     @Override
     public void generateTask() {
         InputStreamReader isr = null;
