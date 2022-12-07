@@ -55,4 +55,11 @@ public class utils {
             dir.delete();// 删除目录本身
         }
     }
+    //拼接文件夹的路径
+    public static String joinPath(String fatherPath, String sonPath){
+        if(fatherPath.charAt(fatherPath.length() - 1) == '/')
+            return fatherPath + sonPath;
+        else
+            return fatherPath + "/" + sonPath;
+    }
 }
