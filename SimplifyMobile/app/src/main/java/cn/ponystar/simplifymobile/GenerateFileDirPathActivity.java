@@ -12,7 +12,7 @@ public class GenerateFileDirPathActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_file_path);
         String appDirPath = getExternalFilesDir(null).toString();
-        Log.i("AppDirPath", appDirPath);
+        utils.sendMessageToComputer("AppDirPath", appDirPath);
     }
 
 }
