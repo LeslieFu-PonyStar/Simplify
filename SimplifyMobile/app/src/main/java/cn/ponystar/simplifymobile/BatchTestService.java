@@ -83,9 +83,9 @@ public class BatchTestService extends Service {
             }
         }
         if(this.startState)
-            Log.i("LoadFile", "Successfully");
+            utils.sendMessageToComputer("LoadFile", "Successfully");
         else
-            Log.i("LoadFile", "Error," + this.errorMessages.toString());
+            utils.sendMessageToComputer("LoadFile", "Error," + this.errorMessages.toString());
     }
 
     @Override
@@ -93,8 +93,9 @@ public class BatchTestService extends Service {
         if(this.startState) {
             //通过adb发送的参数判断当前数据集的真实标签
             int currentClassId = intent.getIntExtra("currentClass", -1);
+            utils.sendMessageToComputer("currentClass", String.valueOf(currentClassId));
             if(currentClassId < 0){
-                Log.i("BatchTestEnd", "Activate");
+                utils.sendMessageToComputer("BatchTestEnd", "Activate");
             }else if (currentClassId < this.task.getClassNames().length()) {
                 File[] imageList = this.datasetDir.listFiles();
                 if (imageList != null) {
@@ -117,12 +118,12 @@ public class BatchTestService extends Service {
                             }
                         }
                         this.time += System.currentTimeMillis() - startTime;
-                        Log.i("res", "" + maxScoreIdx);
+                        utils.sendMessageToComputer("res", "" + maxScoreIdx);
                         this.resArrays[currentClassId][maxScoreIdx] += 1;
                     }
                     //先删除图像文件，再发消息
                     utils.deleteDir(datasetDir, true);
-                    Log.i("BatchTestEnd", "Current batch test end.");
+                    utils.sendMessageToComputer("BatchTestEnd", "Current batch test end.");
                 }
             } else {
                 try {
@@ -138,9 +139,9 @@ public class BatchTestService extends Service {
                     csvWriter.write(resSb.toString());
                     csvWriter.close();
                 } catch (Exception e) {
-                    Log.i("error", e.toString());
+                    utils.sendMessageToComputer("error", e.toString());
                 } finally {
-                    Log.i("CsvWrite", "Current batch test end.");
+                    utils.sendMessageToComputer("CsvWrite", "Current batch test end.");
                 }
             }
         }

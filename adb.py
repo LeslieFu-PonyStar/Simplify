@@ -68,11 +68,11 @@ def generate_config(file_dir_path, dataset_path, model_path):
     json_dict["task_name"] = "classify"
     json_dict["dataset_path"] = file_dir_path + "/" + "dataset"
     json_dict["model_path"] = file_dir_path + "/" + get_dir_and_file(model_path).get("file_name")
-    json_dict["class"] = dir_names
+    json_dict["classes"] = dir_names
     with open(r".\config.json","w") as f:
         json.dump(json_dict,f)
 
-def start_main_activity(batch_size = 200, dataset_path = r"D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\init\test_set", model_path=r"D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\init\SqueezeNet.pt"):
+def start_main_activity(batch_size = 200, dataset_path = r"D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\init\dataset", model_path=r"D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\init\SqueezeNet.pt"):
     logcat_clean()
     # 获取应用文件夹
     file_dir_path = ""
@@ -117,33 +117,45 @@ def start_main_activity(batch_size = 200, dataset_path = r"D:\CSTCloud\Freshman\
     batch_test_end_listener = subprocess.Popen([adb_path, "logcat","BatchTestEnd:I", "*:S"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
     batch_test_end_pattern = re.compile(r'I BatchTestEnd:')
 
-    class_id = 0
     
-    for root,dir_names,file_names in os.walk(dataset_path):
-        class_num = len(dir_names)
-        for dir in dir_names:
-            batch_id = 0
-            class_dir = os.path.join(dataset_path, dir)
-            class_size = len(os.listdir(class_dir))
-            while(True):
-                line = batch_test_end_listener.stdout.readline()
-                res = re.search(batch_test_end_pattern, line)
-                if(res != None):
-                    file_begin = batch_id*batch_size + 1
-                    if(batch_id == int((class_size - 1) / batch_size)):
-                        file_end = class_size
-                        add_sdcard_files(class_dir, file_dir_path + "/dataset", False, file_begin, file_end)
-                        subprocess.call([adb_path, "shell", "am", "startservice", "-n",  app_name + "BatchTestService", "--ei", "currentClass", str(class_id)])
-                        break
-                    else:
-                        file_end = batch_id*batch_size + batch_size
-                        add_sdcard_files(class_dir, file_dir_path + "/dataset", False, file_begin, file_end)
-                        subprocess.call([adb_path, "shell", "am", "startservice", "-n",  app_name + "BatchTestService", "--ei", "currentClass", str(class_id)])
-                    batch_id += 1
-            class_id += 1
-    subprocess.call([adb_path, "shell", "am", "startservice", "-n", app_name + "BatchTestService", "--ei", "currentClass", str(class_num)])
-    subprocess.call([adb_path, "pull", file_dir_path + "/result.csv", r".\result.csv"])
-    batch_test_end_listener.kill()
+    dir_names = os.listdir(dataset_path)
+    class_num = len(dir_names)
+    class_id = 0
+    for dir in dir_names:
+        batch_id = 0
+        class_dir = os.path.join(dataset_path, dir)
+        class_size = len(os.listdir(class_dir))
+        while(True):
+            line = batch_test_end_listener.stdout.readline()
+            res = re.search(batch_test_end_pattern, line)
+            if(res != None):
+                file_begin = batch_id*batch_size + 1
+                if(batch_id == int((class_size - 1) / batch_size)):
+                    file_end = class_size
+                    add_sdcard_files(class_dir, file_dir_path + "/dataset", False, file_begin, file_end)
+                    subprocess.call([adb_path, "shell", "am", "startservice", "-n",  app_name + "BatchTestService", "--ei", "currentClass", str(class_id)])
+                    break
+                else:
+                    file_end = batch_id*batch_size + batch_size
+                    add_sdcard_files(class_dir, file_dir_path + "/dataset", False, file_begin, file_end)
+                    subprocess.call([adb_path, "shell", "am", "startservice", "-n",  app_name + "BatchTestService", "--ei", "currentClass", str(class_id)])
+                batch_id += 1
+        class_id += 1
+    
+    line = batch_test_end_listener.stdout.readline()
+    res = re.search(batch_test_end_pattern, line)
+    if(res != None):
+        subprocess.call([adb_path, "shell", "am", "startservice", "-n", app_name + "BatchTestService", "--ei", "currentClass", str(class_num)])
+        batch_test_end_listener.kill()
+    result_write_listenser = subprocess.Popen([adb_path, "logcat","CsvWrite:I", "*:S"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+    result_write_pattern = re.compile(r"I CsvWrite")
+    while(True):
+        line = result_write_listenser.stdout.readline()
+        res = re.search(result_write_pattern, line)
+        if(res != None):
+            subprocess.call([adb_path, "pull", file_dir_path + "/result.csv", r".\result.csv"])
+            result_write_listenser.kill()
+            break
 @func_set_timeout(10)
 def get_file_dir_path():
     """从adb logcat中寻找对应的tag，但是如果长时间没找到直接退出（证明有问题）"""

@@ -62,4 +62,8 @@ public class utils {
         else
             return fatherPath + "/" + sonPath;
     }
+
+    public static void sendMessageToComputer(String tag, String msg){
+        Log.i(tag, msg);
+    }
 }

@@ -42,14 +42,14 @@ public class MainActivity extends Activity {
         super.onResume();
         String configPath = utils.joinPath(this.appDirPath, "config.json");
         while(! new File(configPath).exists()){
-            Log.i("Config", "Config file is not found.");
+            utils.sendMessageToComputer("Config", "Config file is not found.");
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        Log.i("Config", "Config file is found.");
+        utils.sendMessageToComputer("Config", "Config file is found.");
         Intent batchTestIntent = new Intent(MainActivity.this, BatchTestService.class);
         startService(batchTestIntent);
     }
