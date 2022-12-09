@@ -7,6 +7,11 @@ from func_timeout import func_set_timeout, FunctionTimedOut
 adb_path = r'D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\Simplify\adb\adb.exe'
 app_name = 'cn.ponystar.simplifymobile/cn.ponystar.simplifymobile.'
 
+#未启用
+def cadb_path( adb ):
+    global adb_path
+    adb_path=adb
+
 def error_handle():
     print(1)
 
@@ -72,7 +77,7 @@ def generate_config(file_dir_path, dataset_path, model_path):
     with open(r".\config.json","w") as f:
         json.dump(json_dict,f)
 
-def start_main_activity(batch_size = 200, dataset_path = r"D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\init\dataset", model_path=r"D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\init\SqueezeNet.pt"):
+def start_main_activity( dataset_path , model_path,batch_size = 200):
     logcat_clean()
     # 获取应用文件夹
     file_dir_path = ""
@@ -173,4 +178,4 @@ def get_file_dir_path():
             file_dir_path = line[end + 1:-1]
             return file_dir_path
 
-start_main_activity()
+#start_main_activity()
