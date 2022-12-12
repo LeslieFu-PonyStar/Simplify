@@ -1,0 +1,17 @@
+序号, 类别名, 准确率, 召回率, F1
+1, Apple, 0, 0, 0
+2, Background_without_leaves, 0, 0, 0
+3, Blueberry___healthy, 0, 0, 0
+4, Cherry, 0, 0, 0
+5, Corn, 0, 0, 0
+6, Grape, 0.0, 0, 0
+7, Orange___Haunglongbing_(Citrus_greening), 0, 0, 0
+8, Peach, 0.0, 0, 0
+9, Pepper, 0.0, 0, 0
+10, Potato, 100.0, 52.7, 69.02
+11, Raspberry___healthy, 100.0, 98.99, 99.49
+12, Soybean___healthy, 97.44, 100.0, 98.7
+13, Squash___Powdery_mildew, 100.0, 100.0, 100.0
+14, Straberry, 100.0, 98.73, 99.36
+15, Tomato, 98.6, 99.93, 99.26
+16, 模型总体, 39.736, 36.690000000000005, 38.15
