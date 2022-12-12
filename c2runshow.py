@@ -7,10 +7,21 @@ from matplotlib.pyplot import savefig
 import sys
 
 from adb import *
-
+from task.classify_task import ClassifyTask, Task
 import requests
 
 from cresult import result
+
+class TaskThread(QtCore.QThread):
+    end_signal = QtCore.pyqtSignal(str)
+    def __init__(self, task:Task):
+        super(TaskThread, self).__init__()
+        self.task = task
+
+    @QtCore.pyqtSlot()
+    def run(self):
+        self.task.start_main_activity()
+        self.end_signal.emit("Complete!")
 
 class main(Ui_MainWindow,QtWidgets.QMainWindow,result):
 
@@ -20,6 +31,8 @@ class main(Ui_MainWindow,QtWidgets.QMainWindow,result):
         #super(Ui_MainWindow,self).__init__()
         self.setupUi(self)
         self.retranslateUi(self)
+        self.current_task = None
+        self.current_task_thread = TaskThread(self.current_task)
 
     def post1(self,filepath):
         try:
@@ -125,10 +138,9 @@ class main(Ui_MainWindow,QtWidgets.QMainWindow,result):
     def utplot(self,conf_d,dataset_d ):
         # 正确显示中文和负号
         try:
-
             x=self.tplot(conf_d,dataset_d)
             if x==1:
-                self.label.setPixmap(QtGui.QPixmap(r".\ui\tpolt\1.jpg"))
+                self.label.setPixmap(QtGui.QPixmap(r".\ui\tplot\1.jpg"))
                 self.label.setScaledContents(True)
 
         except:
@@ -139,16 +151,26 @@ class main(Ui_MainWindow,QtWidgets.QMainWindow,result):
 
     def start_test(self):
         try:
-            #adb=self.lineEdit_2.text()
-          #  cadb_path(adb)
+        #     adb=self.lineEdit_2.text()
+        #    cadb_path(adb)
             model=self.lineEdit_4.text()
             dataset=self.lineEdit_3.text()
-            start_main_activity(dataset_path=dataset,model_path=model)
+            self.current_task = ClassifyTask(dataset, model, batch_size=200)
+            self.current_task_thread = TaskThread(self.current_task)
+            self.pushButton_4.setEnabled(False)
+            self.current_task_thread.start()
+            self.current_task_thread.end_signal.connect(self.end_test)
+
+            
         except:
             error_dialog = QtWidgets.QErrorMessage()
             error_dialog.showMessage('''Oh no!错误位置: // start_test //函数出现问题 ，\n请检查一下!
                                 ┭┮﹏┭┮''')
             error_dialog.exec()
+
+    def end_test(self, str):
+        if(str == "Complete!"):
+            self.pushButton_4.setEnabled(True)
 
 if __name__=="__main__":
     app = QApplication(sys.argv)
@@ -175,3 +197,6 @@ if __name__=="__main__":
     #b=ui.lineEdit_3.text()
     #ui.pushButton_3.clicked.connect(lambda: ui.tplot(a, b))
     sys.exit(app.exec_())
+
+
+
