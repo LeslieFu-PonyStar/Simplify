@@ -11,6 +11,8 @@ class result():
         f1 = np.array(f1)
         self.runtime=f1[-1][0]
         f1=f1[:-1]
+        # 修改因为最后一列识别为nan的错误
+        f1=np.delete(f1, -1, axis=1)
         f1=f1.astype(int)
         self.row=f1.shape[0]
         return f1
@@ -154,7 +156,7 @@ if __name__=="__main__":
 
     #f1=case.readfile(r".\result.csv")
     #case.copy(r".\result.csv",r".\test_result\22.csv")
-    avp,avr,avf=case.detail(r".\result.csv",r"D:\Simplify-main\dataset\dataset")
+    avp,avr,avf=case.detail(r".\result.csv",r"D:\CSTCloud\Freshman\SoftwareEngineering\Simplify\init\dataset")
 """
     print(re)
     print('\n')
