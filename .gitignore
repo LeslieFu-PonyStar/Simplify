@@ -1,4 +1,6 @@
 result.csv
 /test_result
 config.json
-*pyc
+*.pyc
+*.autosave
+/ui/tplot
